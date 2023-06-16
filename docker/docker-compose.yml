@@ -1,0 +1,46 @@
+services:
+  redis:
+    image: redis
+    container_name: duke-redis
+    ports:
+      - '6379:6379'
+  flask:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: duke-flask
+    ports:
+      - 5000:5000
+    depends_on:
+      # - celery
+      - redis
+  # celery:
+  #   build: 
+  #     context: ./celery-queue
+  #   #   # dockerfile: Dockerfile
+  #   container_name: duke-celery
+  #   #command: celery -A celery_instance worker --loglevel=info
+  #   command: celery -A app.celery worker --loglevel=info
+  #   links:
+  #     - redis
+  #   depends_on:
+  #     - redis
+  # flower:
+  #   image: mher/flower
+  #   container_name: duke-flower
+  #   ports:
+  #     - '5555:5555'
+  #   #command: flower --broker=redis://redis:6379/0
+  #   command: celery -A app.celery flower --port=5555 
+  #   depends_on:
+  #     - redis
+  #     - celery
+  #     - flask
+  # # main:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: python main.py
+  #   depends_on:
+  #     - redis
+  #     - celery
